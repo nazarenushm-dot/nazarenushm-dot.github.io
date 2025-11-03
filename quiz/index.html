@@ -1,14 +1,34 @@
+Here is the updated single-page application.
+
+I have made three major changes based on your request:
+
+1.  **Color:** The UI color scheme is now red instead of green.
+2.  **Bigger Screen:** The game window is significantly larger (1000px wide by 750px tall).
+3.  **Visuals:** A new visual pane has been added. It features a pixelated student who "walks" as you progress, and pixel-art "buildings" (landmarks) scroll by. This animation automatically pauses when an event pops up and resumes when you continue.
+
+You can copy and paste this code into a single `index.html` file.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Nebraskan News Quiz</title>
+    <title>The Husker Trail</title>
     <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #FF0000; /* Changed to Red */
+            --border-color: #FF0000; /* Changed to Red */
+            --button-bg: #220000;
+            --button-hover-bg: #440000;
+            --modal-bg: #110000;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,130 +36,196 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            user-select: none;
         }
 
-        #quiz-container {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        #game-window {
             width: 100%;
-            max-width: 600px;
-            overflow: hidden;
-        }
-
-        #quiz-header {
-            padding: 24px 32px;
-            background-color: #d00000; /* Husker Red */
-            color: white;
-        }
-
-        #quiz-header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        #quiz-body {
-            padding: 32px;
-        }
-
-        #question-number {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
-        }
-
-        #question-text {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        #options-container {
+            max-width: 1000px; /* Made wider */
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 15px var(--border-color);
+            background-color: #080808;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            height: 750px; /* Made taller */
         }
 
-        .option-label {
-            display: block;
-            background-color: #f8f8f8;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
+        #status-bar {
+            padding: 10px 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            font-size: 1rem; /* Slightly larger font for bigger screen */
+            line-height: 1.5;
         }
-
-        .option-label:hover {
-            background-color: #f0f0f0;
-        }
-
-        .option-label input[type="radio"] {
-            margin-right: 12px;
-            accent-color: #d00000;
+        #status-bar div {
+            flex-basis: 48%;
         }
         
-        /* Style for when a radio button is checked */
-        input[type="radio"]:checked + span {
-            font-weight: 600;
+        /* --- NEW VISUAL PANE --- */
+        #visual-pane {
+            height: 200px;
+            border-bottom: 2px solid var(--border-color);
+            background-color: #000;
+            position: relative;
+            overflow: hidden; /* This creates the "screen" */
         }
 
-        #feedback {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-top: 16px;
-            height: 20px;
+        #visual-pane.paused * {
+            animation-play-state: paused !important;
         }
 
-        #feedback.correct {
-            color: #28a745;
+        #ground {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--border-color);
         }
 
-        #feedback.incorrect {
-            color: #d00000;
+        #student-sprite {
+            position: absolute;
+            bottom: 22px; /* Sits on the ground line */
+            left: 50px;
+            width: 10px;
+            height: 15px;
+            background-color: var(--text-color); /* Body */
+            box-shadow: 0 -10px 0 0 var(--text-color); /* Head */
+            animation: walk-bob 0.5s infinite steps(2, end);
+        }
+        
+        .building {
+            position: absolute;
+            bottom: 22px; /* On the ground */
+            width: 50px;
+            height: 80px;
+            background-color: var(--border-color);
+            box-shadow: 10px -10px 0 0 var(--border-color); /* Another part of building */
+            animation: scroll 10s linear infinite;
+        }
+        
+        .building.type-2 {
+            width: 30px;
+            height: 50px;
+            animation-duration: 7s;
+            animation-delay: 3s;
+        }
+        
+        .building.type-3 {
+            width: 70px;
+            height: 120px;
+            animation-duration: 15s;
+            animation-delay: 6s;
+        }
+        
+        /* --- ANIMATIONS --- */
+        @keyframes walk-bob {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+            100% { transform: translateY(0); }
         }
 
-        #quiz-footer {
-            padding: 32px;
-            border-top: 1px solid #eee;
+        @keyframes scroll {
+            0% { transform: translateX(1100px); } /* Start off-screen right */
+            100% { transform: translateX(-100px); } /* End off-screen left */
+        }
+        /* --- END VISUAL PANE --- */
+
+
+        #log-feed {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 2px solid var(--border-color);
+        }
+        #log-feed p {
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            font-size: 1.1rem; /* Slightly larger */
+        }
+
+        #controls {
+            padding: 15px;
             display: flex;
             justify-content: flex-end;
+            gap: 15px;
         }
 
-        #next-btn, #restart-btn {
-            background-color: #d00000;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: 600;
+        .game-button {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 12px 24px; /* Bigger buttons */
+            font-size: 1.1rem;
             cursor: pointer;
             transition: background-color 0.2s;
         }
-
-        #next-btn:hover, #restart-btn:hover {
-            background-color: #a00000;
+        .game-button:hover, .game-button:focus {
+            background-color: var(--button-hover-bg);
+            outline: none;
+        }
+        .game-button:disabled {
+            color: #555;
+            border-color: #555;
+            background-color: #222;
+            cursor: not-allowed;
         }
 
-        #results-container {
+        #event-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        #event-content {
+            background-color: var(--modal-bg);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 20px var(--text-color);
+            padding: 25px;
+            width: 90%;
+            max-width: 600px; /* Bigger modal */
+        }
+
+        #event-visual {
+            background-color: #000;
+            border: 1px solid var(--border-color);
+            height: 100px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            padding: 10px;
             text-align: center;
-            padding: 40px;
         }
 
-        #results-container h2 {
-            font-size: 1.75rem;
-            margin-bottom: 16px;
+        #event-text {
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 1.1rem;
         }
 
-        #results-container p {
-            font-size: 1.25rem;
-            margin-bottom: 24px;
+        #event-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-
-        /* Hide elements by default */
+        
+        .choice-button {
+            width: 100%;
+            text-align: left;
+        }
+        
         .hidden {
             display: none;
         }
@@ -147,466 +233,393 @@
 </head>
 <body>
 
-    <div id="quiz-container">
-        <div id="quiz-header">
-            <h1>Daily Nebraskan News Quiz</h1>
-        </div>
-
-        <div id="quiz-body" class="">
-            <div id="question-number"></div>
-            <div id="question-text">Loading question...</div>
-            <div id="options-container">
-                </div>
-            <div id="feedback"></div>
+    <div id="game-window">
+        <div id="status-bar">
+            <div>Date: <span id="status-date">Week 1 of 15</span></div>
+            <div>Location: <span id="status-location">Abel Hall</span></div>
+            <div>Grades: <span id="status-grades">80</span></div>
+            <div>Energy: <span id="status-energy">100</span></div>
+            <div>Money: $<span id="status-money">500</span></div>
+            <div>Social: <span id="status-social">50</span></div>
         </div>
         
-        <div id="quiz-footer" class="">
-            <button id="next-btn">Next Question</button>
+        <div id="visual-pane">
+            <div id="student-sprite"></div>
+            <div id="ground"></div>
+            <div class="building"></div>
+            <div class="building type-2"></div>
+            <div class="building type-3"></div>
         </div>
 
-        <div id="results-container" class="hidden">
-            <h2>Quiz Complete!</h2>
-            <p id="score-text">Your score will be shown here.</p>
-            <button id="restart-btn">Play Again</button>
+        <div id="log-feed" id="log-feed">
+            <p>You have arrived at the University of Nebraska-Lincoln. Your goal is to survive 15 weeks and graduate.</p>
+            <p>You are moving into Abel Hall. Good luck.</p>
+        </div>
+
+        <div id="controls">
+            <button class="game-button" id="continue-btn">Continue to next week</button>
+            <button class="game-button hidden" id="restart-btn">Play Again</button>
+        </div>
+    </div>
+
+    <div id="event-modal">
+        <div id="event-content">
+            <div id="event-visual">[Visual: <span id="visual-text"></span>]</div>
+            <h3 id="event-title"></h3>
+            <p id="event-text"></p>
+            <div id="event-choices">
+                </div>
         </div>
     </div>
 
     <script>
-        // 1. JSON Data
-        const allQuestions = [
-            {
-                "questionNumber": 1,
-                "topic": "Nebraska Football",
-                "questionText": "True or False: The win against Northwestern made Nebraska bowl eligible in the month of October for the first time since 2016.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "True"
-            },
-            {
-                "questionNumber": 2,
-                "topic": "Nebraska Football",
-                "questionText": "What was the final score of the Nebraska vs. Northwestern game?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) 21-14",
-                    "B) 24-6",
-                    "C) 28-21",
-                    "D) 21-21"
-                ],
-                "answer": "C",
-                "answerText": "C) 28-21"
-            },
-            {
-                "questionNumber": 3,
-                "topic": "Nebraska Football",
-                "questionText": "According to the article, who is the Big Ten's rushing leader?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Anthony Grant",
-                    "B) Emmett Johnson",
-                    "C) Isaiah Mozee",
-                    "D) Dylan Raiola"
-                ],
-                "answer": "B",
-                "answerText": "B) Emmett Johnson"
-            },
-            {
-                "questionNumber": 4,
-                "topic": "Nebraska Football",
-                "questionText": "True or False: Emmett Johnson is the first Nebraska tailback since Anthony Grant in 2022 to have four 100-yard rushing games in a season.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "True"
-            },
-            {
-                "questionNumber": 5,
-                "topic": "Nebraska Football",
-                "questionText": "What grade did the article give Nebraska's passing attack?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) A-",
-                    "B) B-",
-                    "C) B+",
-                    "D) D+"
-                ],
-                "answer": "B",
-                "answerText": "B) B-"
-            },
-            {
-                "questionNumber": 6,
-                "topic": "Nebraska Football",
-                "questionText": "How many sacks did the Nebraska offensive line allow against Northwestern, one week after allowing nine against Minnesota?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) One",
-                    "B) Nine",
-                    "C) Zero",
-                    "D) Three"
-                ],
-                "answer": "A",
-                "answerText": "A) One"
-            },
-            {
-                "questionNumber": 7,
-                "topic": "Nebraska Football",
-                "questionText": "True or False: Quarterback Dylan Raiola threw an interception when the game was tied 21-21 in the fourth quarter.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "True"
-            },
-            {
-                "questionNumber": 8,
-                "topic": "Nebraska Football",
-                "questionText": "Which player leads the Huskers in receiving and caught a 12-yard touchdown pass in the third quarter?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Emmett Johnson",
-                    "B) Donovan Jones",
-                    "C) Isaiah Mozee",
-                    "D) Nyziah Hunter"
-                ],
-                "answer": "D",
-                "answerText": "D) Nyziah Hunter"
-            },
-            {
-                "questionNumber": 9,
-                "topic": "Nebraska Football",
-                "questionText": "True or False: The Blackshirt defense failed to force any turnovers against Northwestern.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "False"
-            },
-            {
-                "questionNumber": 10,
-                "topic": "Nebraska Football",
-                "questionText": "What grade did the article give Nebraska's special teams unit?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) A",
-                    "B) B-",
-                    "C) C",
-                    "D) A-"
-                ],
-                "answer": "A",
-                "answerText": "A) A"
-            },
-            {
-                "questionNumber": 11,
-                "topic": "Nebraska Football",
-                "questionText": "Who had a 95-yard kickoff return for a touchdown to start the second half?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) JD Spielman",
-                    "B) Nyziah Hunter",
-                    "C) Kenneth Williams",
-                    "D) Donovan Jones"
-                ],
-                "answer": "C",
-                "answerText": "C) Kenneth Williams"
-            },
-            {
-                "questionNumber": 12,
-                "topic": "Nebraska Football",
-                "questionText": "True or False: According to head coach Matt Rhule, the team made a big celebration after the game because they had become bowl eligible, just like they did last year.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "False"
-            },
-            {
-                "questionNumber": 13,
-                "topic": "Nebraska Volleyball",
-                "questionText": "At the time of the article, what was the Nebraska volleyball team's season record?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) 13-7",
-                    "B) 16-0",
-                    "C) 18-0",
-                    "D) 9-0"
-                ],
-                "answer": "C",
-                "answerText": "C) 18-0"
-            },
-            {
-                "questionNumber": 14,
-                "topic": "Nebraska Volleyball",
-                "questionText": "Nebraska has not lost a set since its match on September 16 against which opponent?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Creighton",
-                    "B) Penn State",
-                    "C) Purdue",
-                    "D) Wisconsin"
-                ],
-                "answer": "A",
-                "answerText": "A) Creighton"
-            },
-            {
-                "questionNumber": 15,
-                "topic": "Nebraska Volleyball",
-                "questionText": "True or False: The Huskers' 28-set win streak is the longest in program history.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "False"
-            },
-            {
-                "questionNumber": 16,
-                "topic": "Nebraska Volleyball",
-                "questionText": "Who is the head coach of the Nebraska volleyball team?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Matt Rhule",
-                    "B) Mike Ekeler",
-                    "C) Dani Busboom Kelly",
-                    "D) John Butler"
-                ],
-                "answer": "C",
-                "answerText": "C) Dani Busboom Kelly"
-            },
-            {
-                "questionNumber": 17,
-                "topic": "Nebraska Volleyball",
-                "questionText": "Which junior middle blocker was named the reigning Big Ten Defensive Player of the Week?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Andi Jackson",
-                    "B) Javin Wright",
-                    "C) Nyziah Hunter",
-                    "D) Griffin Wilde"
-                ],
-                "answer": "A",
-                "answerText": "A) Andi Jackson"
-            },
-            {
-                "questionNumber": 18,
-                "topic": "Nebraska Volleyball",
-                "questionText": "True or False: According to the article, Nebraska swept Wisconsin three separate times last year.",
-                "format": "True/False",
-                "options": ["True", "False"],
-                "answer": "True"
-            },
-            {
-                "questionNumber": 19,
-                "topic": "Nebraska Volleyball",
-                "questionText": "Of the 12 regular-season matches Nebraska has left, how many opponents are currently in the AVCA Top 25?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Two",
-                    "B) Five",
-                    "C) Six",
-                    "D) Twelve"
-                ],
-                "answer": "B",
-                "answerText": "B) Five"
-            },
-            {
-                "questionNumber": 20,
-                "topic": "Nebraska Volleyball",
-                "questionText": "Which of the Huskers' remaining opponents is ranked the highest (No. 12)?",
-                "format": "Multiple Choice",
-                "options": [
-                    "A) Wisconsin",
-                    "B) Indiana",
-                    "C) Minnesota",
-                    "D) UCLA"
-                ],
-                "answer": "A",
-                "answerText": "A) Wisconsin"
+        // --- 1. GAME DATA (FROM YOUR JSON) ---
+        const gameData = {
+          "gameConfig": {
+            "initialStats": {
+              "Grades": 80,
+              "Energy": 100,
+              "Money": 500,
+              "Social": 50
             }
-        ];
+          },
+          "landmarks": [
+            { "week": 1, "name": "Abel Hall" },
+            { "week": 4, "name": "Nebraska Union" },
+            { "week": 6, "name": "Memorial Stadium" },
+            { "week": 8, "name": "Love Library (Midterms)" },
+            { "week": 10, "name": "Campus Rec Center" },
+            { "week": 12, "name": "College of Business" },
+            { "week": 15, "name": "Pinnacle Bank Arena (Graduation)" }
+          ],
+          "randomEvents": [
+            {
+              "id": "event_001", "title": "The First Football Game", "visual": "8-bit pixel art Memorial Stadium crowd", "text": "It's Saturday morning. Your roommate tells you, 'It's GAME DAY. We're tailgating at 7 AM for the 11 AM kickoff.' You have a paper due Monday.",
+              "choices": [
+                { "text": "Go to the tailgate (7 AM)", "outcomes": [{ "stat": "Energy", "change": -8 }, { "stat": "Money", "change": -15 }, { "stat": "Social", "change": 20 }, { "stat": "Grades", "change": -5 }], "resultText": "You have a great time, but your paper suffers." },
+                { "text": "Go just for the game (10:30 AM)", "outcomes": [{ "stat": "Energy", "change": -4 }, { "stat": "Money", "change": -5 }, { "stat": "Social", "change": 10 }], "resultText": "You balanced fun and responsibility. Good job." },
+                { "text": "Stay home and study", "outcomes": [{ "stat": "Grades", "change": 10 }, { "stat": "Social", "change": -10 }], "resultText": "Your paper is great, but your friends are sad." }
+              ]
+            },
+            {
+              "id": "event_002", "title": "The Selleck Hall Sickness", "visual": "8-bit pixel art student in bed", "text": "You've eaten at a dining hall every day for a week. You have contracted the 'Selleck Hall Sickness.' Your Energy is cut in half.",
+              "choices": [
+                { "text": "Go to the Health Center", "outcomes": [{ "stat": "Money", "change": -20 }], "resultText": "You get medicine and recover in 1 day. You lose half your energy for this turn." },
+                { "text": "Tough it out", "outcomes": [{ "stat": "Grades", "change": -15 }], "resultText": "You miss 3 classes and your grades plummet. You lose half your energy for 3 turns." },
+                { "text": "Use a meal-swipe delivery for soup", "outcomes": [{ "stat": "Money", "change": -12 }, { "stat": "Social", "change": 5 }], "resultText": "A kind friend brings you soup. You recover in 2 days." }
+              ]
+            },
+            {
+              "id": "event_003", "title": "The Ice Storm", "visual": "8-bit pixel art UNL Love Library in snow", "text": "A sudden ice storm hits Lincoln. Campus is NOT closed. You are in Abel/Sandoz, and your class is in the College of Business (CBA) in 10 minutes.",
+              "choices": [
+                { "text": "Brave the walk", "outcomes": [{ "stat": "Energy", "change": -5 }, { "stat": "Grades", "change": -5 }], "resultText": "You slipped on the ice at 14th & R. You are late and soaked." },
+                { "text": "Wait for the (packed) campus bus", "outcomes": [{ "stat": "Grades", "change": -10 }], "resultText": "The bus is full and drives past you. You miss class." },
+                { "text": "Email your professor and skip", "outcomes": [{ "stat": "Energy", "change": -10 }], "resultText": "No penalty, but you must 'Self-Study' (costs 10 Energy)." }
+              ]
+            },
+            {
+              "id": "event_004", "title": "The Midterm Dilemma", "visual": "8-bit pixel art student at computer", "text": "It's Midterm Week. You have a final project for 'Intro to Communications' and a major exam for 'Calculus 1' on the same day.",
+              "choices": [
+                { "text": "Cram for the Calc exam", "outcomes": [{ "stat": "Grades", "change": 5, "note": "This choice has complex effects" }], "resultText": "You pass Calc, but your Comm group is furious. (-10 Grades, -10 Energy)" },
+                { "text": "Focus on the group project", "outcomes": [{ "stat": "Social", "change": 10 }, { "stat": "Grades", "change": -5, "note": "This choice has complex effects" }], "resultText": "Your group loves you, but you bomb the Calc exam. (-15 Grades)" },
+                { "text": "Pull an all-nighter", "outcomes": [{ "stat": "Grades", "change": -20 }, { "stat": "Energy", "change": -20 }], "resultText": "You fell asleep on your keyboard. (-10 Grades Both, -20 Energy)" }
+              ]
+            },
+            {
+              "id": "event_005", "title": "The Laptop Dies", "visual": "8-bit pixel art broken laptop", "text": "Your laptop has died. This is the new dysentery.",
+              "choices": [
+                { "text": "Go to the HuskerTech Help Desk", "outcomes": [{ "stat": "Grades", "change": -15 }], "resultText": "They can fix it, but it will take 3 days. -15 Grades." },
+                { "text": "Buy a new one", "outcomes": [{ "stat": "Money", "change": -400 }], "resultText": "You have a shiny new laptop, but you are very poor." },
+                { "text": "Use the Love Library computers", "outcomes": [{ "stat": "Energy", "change": -10 }, { "stat": "Social", "change": -5 }], "resultText": "You get your work done, but it's a hassle. -10 Energy, -5 Social." }
+              ]
+            },
+            {
+              "id": "event_006", "title": "Pop Quiz!", "visual": "8-bit pixel art professor pointing", "text": "You walk into your 'History of Jazz' class and the professor announces a pop quiz.",
+              "choices": [
+                { "text": "You've been studying!", "outcomes": [{ "stat": "Grades", "change": 10 }], "resultText": "You ace the quiz. +10 Grades." },
+                { "text": "You haven't read the chapter.", "outcomes": [{ "stat": "Grades", "change": -10 }], "resultText": "You failed. -10 Grades." }
+              ]
+            },
+            {
+              "id": "event_007", "title": "A Trip to O-Street", "visual": "8-bit pixel art neon bar sign", "text": "It's Thursday night. Your friends want to go to O-Street.",
+              "choices": [
+                { "text": "Go, but just for an hour.", "outcomes": [{ "stat": "Social", "change": 10 }, { "stat": "Energy", "change": -5 }, { "stat": "Money", "change": -15 }], "resultText": "You have a good time and still get some sleep." },
+                { "text": "Stay out all night!", "outcomes": [{ "stat": "Social", "change": 25 }, { "stat": "Energy", "change": -20 }, { "stat": "Money", "change": -50 }, { "stat": "Grades", "change": -10 }], "resultText": "You are a social legend... but you sleep through your class." },
+                { "text": "Stay in and study.", "outcomes": [{ "stat": "Grades", "change": 5 }, { "stat": "Social", "change": -5 }], "resultText": "You are responsible, but your friends call you lame." }
+              ]
+            },
+            {
+              "id": "event_008", "title": "Parking Ticket", "visual": "8-bit pixel art car with ticket", "text": "You were parked in the wrong lot for only 10 minutes and found a bright orange ticket on your windshield.",
+              "choices": [
+                { "text": "Pay the fine.", "outcomes": [{ "stat": "Money", "change": -40 }], "resultText": "That stings. -40 Money." },
+                { "text": "Appeal the ticket.", "outcomes": [{ "stat": "Energy", "change": -5 }, { "stat": "Money", "change": -40 }], "resultText": "You spend an hour arguing and lose anyway. -5 Energy, -40 Money." }
+              ]
+            },
+            {
+              "id": "event_009", "title": "Free Concert at the Union", "visual": "8-bit pixel art band playing", "text": "A pretty good local band is playing for free in the Nebraska Union. You have homework.",
+              "choices": [
+                { "text": "Go for 30 minutes", "outcomes": [{ "stat": "Social", "change": 5 }, { "stat": "Energy", "change": -5 }], "resultText": "A nice break. You feel refreshed." },
+                { "text": "Skip it, homework calls.", "outcomes": [{ "stat":"Grades", "change": 5 }], "resultText": "Your grades are safe, but you missed a good show." }
+              ]
+            },
+            {
+              "id": "event_010", "title": "Found Money!", "visual": "8-bit pixel art $20 bill", "text": "You found a $20 bill on the sidewalk near the Broyhill Fountain!",
+              "choices": [
+                { "text": "Keep it!", "outcomes": [{ "stat": "Money", "change": 20 }], "resultText": "Score! +20 Money." },
+                { "text": "Turn it in to the Union desk.", "outcomes": [{ "stat": "Social", "change": 5 }], "resultText": "A good deed. You get a 'thanks' from the staff. +5 Social." }
+              ]
+            }
+          ]
+        };
 
-        // 2. DOM Element References
-        const quizBody = document.getElementById('quiz-body');
-        const quizFooter = document.getElementById('quiz-footer');
-        const resultsContainer = document.getElementById('results-container');
+        // --- 2. DOM ELEMENT REFERENCES ---
+        const statusBar = {
+            date: document.getElementById('status-date'),
+            location: document.getElementById('status-location'),
+            grades: document.getElementById('status-grades'),
+            energy: document.getElementById('status-energy'),
+            money: document.getElementById('status-money'),
+            social: document.getElementById('status-social'),
+        };
+        const visualPane = document.getElementById('visual-pane'); // NEW
+        const logFeed = document.getElementById('log-feed');
+        const continueBtn = document.getElementById('continue-btn');
+        const restartBtn = document.getElementById('restart-btn');
         
-        const questionNumberEl = document.getElementById('question-number');
-        const questionTextEl = document.getElementById('question-text');
-        const optionsContainerEl = document.getElementById('options-container');
-        const feedbackEl = document.getElementById('feedback');
-        
-        const nextButton = document.getElementById('next-btn');
-        const restartButton = document.getElementById('restart-btn');
-        const scoreTextEl = document.getElementById('score-text');
+        const eventModal = document.getElementById('event-modal');
+        const eventTitle = document.getElementById('event-title');
+        const eventVisualText = document.getElementById('visual-text');
+        const eventText = document.getElementById('event-text');
+        const eventChoicesContainer = document.getElementById('event-choices');
 
-        // 3. Quiz State Variables
-        let quizQuestions = []; // This will hold the 5 random questions
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let answerSelected = false;
+        // --- 3. GAME STATE ---
+        let stats = {};
+        let currentWeek = 1;
+        const maxWeeks = 15;
+        let trailMap = [];
+        let currentLocation = "Abel Hall";
+        let gameOver = false;
 
-        // 4. Quiz Logic
-        
+        // --- 4. GAME FUNCTIONS ---
+
         /**
-         * Shuffles an array in place (Fisher-Yates shuffle)
-         * @param {Array} array Array to shuffle
+         * Shuffles an array in place (Fisher-Yates)
          */
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
 
         /**
-         * Starts or restarts the quiz
+         * Logs a message to the game feed
          */
-        function startQuiz() {
+        function log(message) {
+            logFeed.innerHTML += `<p>> ${message}</p>`;
+            logFeed.scrollTop = logFeed.scrollHeight; // Auto-scroll
+        }
+
+        /**
+         * Updates the status bar UI
+         */
+        function updateStatusUI() {
+            statusBar.date.textContent = `Week ${currentWeek} of ${maxWeeks}`;
+            statusBar.location.textContent = currentLocation;
+            statusBar.grades.textContent = stats.Grades;
+            statusBar.energy.textContent = stats.Energy;
+            statusBar.money.textContent = stats.Money;
+            statusBar.social.textContent = stats.Social;
+            
+            // Add warning colors (use a darker red for warnings)
+            const warningColor = '#FF4444';
+            statusBar.grades.style.color = stats.Grades < 40 ? warningColor : 'var(--text-color)';
+            statusBar.energy.style.color = stats.Energy < 20 ? warningColor : 'var(--text-color)';
+            statusBar.money.style.color = stats.Money < 0 ? warningColor : 'var(--text-color)';
+            statusBar.social.style.color = stats.Social < 20 ? warningColor : 'var(--text-color)';
+        }
+
+        /**
+         * Updates the current location based on the week
+         */
+        function updateLocation() {
+            let loc = gameData.landmarks.find(l => l.week === currentWeek);
+            if (loc) {
+                currentLocation = loc.name;
+                log(`You have reached: ${currentLocation}`);
+            }
+        }
+        
+        /**
+         * Creates the 15-week trail map with 10 random events and 5 quiet weeks
+         */
+        function createTrailMap() {
+            let events = shuffleArray([...gameData.randomEvents]); // 10 events
+            let quietWeeks = Array(maxWeeks - events.length).fill(null); // 5 nulls
+            trailMap = shuffleArray(events.concat(quietWeeks));
+        }
+
+        /**
+         * Applies the outcome of a choice to the player's stats
+         */
+        function applyOutcome(outcomes) {
+            outcomes.forEach(outcome => {
+                if (stats.hasOwnProperty(outcome.stat)) {
+                    stats[outcome.stat] += outcome.change;
+                }
+            });
+        }
+        
+        /**
+         * Checks for game-ending conditions
+         */
+        function checkGameOver() {
+            if (gameOver) return true; // Don't re-trigger
+            
+            let reason = "";
+            if (stats.Grades < 20) {
+                reason = "Your grades fell too low. You have flunked out.";
+            } else if (stats.Money < -100) {
+                reason = "You are in too much debt. The bursar's office has you cornered.";
+            } else if (stats.Energy <= 0) {
+                reason = "You have collapsed from exhaustion and been sent home.";
+            } else if (stats.Social <= 0) {
+                reason = "You feel too isolated and lonely. You've decided to transfer.";
+            }
+            
+            if (reason) {
+                log("--- GAME OVER ---");
+                log(reason);
+                gameOver = true;
+                visualPane.classList.add('paused'); // Pause animation
+                continueBtn.classList.add('hidden');
+                restartBtn.classList.remove('hidden');
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Shows the event modal with the given event data
+         */
+        function showEvent(event) {
+            log("Something is happening...");
+            visualPane.classList.add('paused'); // Pause animation
+            
+            eventTitle.textContent = event.title;
+            eventVisualText.textContent = event.visual;
+            eventText.textContent = event.text;
+            
+            eventChoicesContainer.innerHTML = ''; // Clear old choices
+            
+            event.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'game-button choice-button';
+                button.textContent = `${index + 1}. ${choice.text}`;
+                button.onclick = () => {
+                    // Apply the choice
+                    applyOutcome(choice.outcomes);
+                    log(choice.resultText);
+                    
+                    // Hide modal and resume
+                    eventModal.style.display = 'none';
+                    if (!gameOver) {
+                        visualPane.classList.remove('paused'); // Resume animation
+                    }
+                    continueBtn.disabled = false;
+                    
+                    // Update UI and check for game over again
+                    updateStatusUI();
+                    checkGameOver();
+                };
+                eventChoicesContainer.appendChild(button);
+            });
+            
+            eventModal.style.display = 'flex';
+            continueBtn.disabled = true;
+        }
+
+        /**
+         * The main game loop, triggered by the "Continue" button
+         */
+        function nextWeek() {
+            if (gameOver) return;
+
+            // Check for game over *before* proceeding
+            if (checkGameOver()) return;
+            
+            // Check for Win
+            if (currentWeek > maxWeeks) {
+                log("--- YOU WIN! ---");
+                log("You made it to Pinnacle Bank Arena. You have graduated!");
+                log("Congratulations, Husker!");
+                gameOver = true;
+                visualPane.classList.add('paused'); // Pause animation
+                continueBtn.classList.add('hidden');
+                restartBtn.classList.remove('hidden');
+                return;
+            }
+
+            // Update location and date
+            log(`--- Week ${currentWeek} ---`);
+            updateLocation();
+            
+            // Get the event for the week
+            const event = trailMap[currentWeek - 1];
+            
+            if (event) {
+                showEvent(event);
+            } else {
+                // A "quiet week"
+                log("A quiet week passes. You study and buy groceries.");
+                stats.Money -= 20; // Weekly expenses
+                stats.Energy -= 5; // Weekly drain
+            }
+            
+            // Increment week for *next* turn
+            currentWeek++;
+            
+            // Update UI
+            updateStatusUI();
+        }
+
+        /**
+         * Starts the game
+         */
+        function startGame() {
             // Reset state
-            currentQuestionIndex = 0;
-            score = 0;
+            stats = { ...gameData.gameConfig.initialStats };
+            currentWeek = 1;
+            currentLocation = "Abel Hall";
+            gameOver = false;
             
-            // Shuffle and pick 5 questions
-            shuffleArray(allQuestions);
-            quizQuestions = allQuestions.slice(0, 5);
+            // Setup UI
+            logFeed.innerHTML = "<p>You have arrived at UNL. Good luck.</p>";
+            continueBtn.classList.remove('hidden');
+            restartBtn.classList.add('hidden');
+            continueBtn.disabled = false;
+            visualPane.classList.remove('paused'); // Start animation
             
-            // Show quiz, hide results
-            quizBody.classList.remove('hidden');
-            quizFooter.classList.remove('hidden');
-            resultsContainer.classList.add('hidden');
+            // Build the trail
+            createTrailMap();
             
-            nextButton.innerText = "Next Question";
-            
-            showQuestion();
-        }
-
-        /**
-         * Displays the current question and options
-         */
-        function showQuestion() {
-            // Reset feedback and button state
-            feedbackEl.textContent = '';
-            feedbackEl.className = '';
-            nextButton.disabled = true;
-            answerSelected = false;
-
-            // Get current question
-            const question = quizQuestions[currentQuestionIndex];
-            
-            // Populate question text
-            questionNumberEl.textContent = `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`;
-            questionTextEl.textContent = question.questionText;
-
-            // Clear old options
-            optionsContainerEl.innerHTML = '';
-
-            // Create new options
-            question.options.forEach((option, index) => {
-                const optionId = `option${index}`;
-                
-                // For Multiple Choice, the option text is "A) Option Text"
-                // For True/False, the option text is just "True" or "False"
-                let optionText = option;
-                
-                // We need to determine the 'value' of the radio button
-                let optionValue;
-                if (question.format === 'True/False') {
-                    optionValue = option; // Value is "True" or "False"
-                } else {
-                    // For "A) Option Text", the value is "A"
-                    optionValue = option.split(')')[0]; 
-                }
-
-                const label = document.createElement('label');
-                label.className = 'option-label';
-                label.htmlFor = optionId;
-
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'answer';
-                radio.id = optionId;
-                radio.value = optionValue;
-                
-                radio.addEventListener('change', () => {
-                    nextButton.disabled = false;
-                    answerSelected = true;
-                    checkAnswer(question);
-                });
-
-                const span = document.createElement('span');
-                span.textContent = optionText;
-
-                label.appendChild(radio);
-                label.appendChild(span);
-                optionsContainerEl.appendChild(label);
-            });
+            // Update UI
+            updateStatusUI();
         }
         
-        /**
-         * Checks the selected answer and provides immediate feedback
-         */
-        function checkAnswer(question) {
-            const selectedRadio = document.querySelector('input[name="answer"]:checked');
-            if (!selectedRadio) return; // Should be impossible due to button state, but good to check
-            
-            const selectedAnswer = selectedRadio.value;
-            let isCorrect = false;
-
-            if (question.format === 'True/False') {
-                isCorrect = (selectedAnswer === question.answer);
-            } else {
-                isCorrect = (selectedAnswer === question.answer);
-            }
-
-            // Disable all radio buttons after selection
-            document.querySelectorAll('input[name="answer"]').forEach(radio => {
-                radio.disabled = true;
-            });
-            
-            if (isCorrect) {
-                score++;
-                feedbackEl.textContent = "Correct!";
-                feedbackEl.className = 'correct';
-            } else {
-                let correctAnswerText = question.answer;
-                if(question.answerText) {
-                    correctAnswerText = question.answerText;
-                } else if (question.format === 'True/False') {
-                    correctAnswerText = question.answer;
-                }
-                
-                feedbackEl.textContent = `Incorrect. The correct answer is: ${correctAnswerText}`;
-                feedbackEl.className = 'incorrect';
-            }
-        }
+        // --- 5. EVENT LISTENERS ---
         
-        /**
-         * Moves to the next question or shows the results
-         */
-        function handleNextClick() {
-            if (!answerSelected) return; // Don't do anything if no answer is selected
-            
-            currentQuestionIndex++;
-            
-            if (currentQuestionIndex < quizQuestions.length) {
-                // More questions left
-                showQuestion();
-                if(currentQuestionIndex === quizQuestions.length - 1) {
-                    nextButton.innerText = "Show Results";
-                }
-            } else {
-                // Quiz is over
-                showResults();
-            }
-        }
+        continueBtn.addEventListener('click', nextWeek);
+        restartBtn.addEventListener('click', () => {
+            // A simple reload is the easiest way to reset a single-page app
+            location.reload(); 
+        });
 
-        /**
-         * Hides the quiz and displays the final score
-         */
-        function showResults() {
-            quizBody.classList.add('hidden');
-            quizFooter.classList.add('hidden');
-            resultsContainer.classList.remove('hidden');
-            
-            scoreTextEl.textContent = `You got ${score} out of ${quizQuestions.length} questions correct!`;
-        }
-        
-        // 5. Event Listeners
-        nextButton.addEventListener('click', handleNextClick);
-        restartButton.addEventListener('click', startQuiz);
-        
-        // 6. Initial Call to Start
-        startQuiz();
+        // --- 6. INITIALIZE GAME ---
+        startGame();
         
     </script>
 </body>
 </html>
+```
