@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Nebraskan News Quiz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #quiz-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        #quiz-header {
+            padding: 24px 32px;
+            background-color: #d00000; /* Husker Red */
+            color: white;
+        }
+
+        #quiz-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        #quiz-body {
+            padding: 32px;
+        }
+
+        #question-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        #question-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: block;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #d00000;
+        }
+        
+        /* Style for when a radio button is checked */
+        input[type="radio"]:checked + span {
+            font-weight: 600;
+        }
+
+        #feedback {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 16px;
+            height: 20px;
+        }
+
+        #feedback.correct {
+            color: #28a745;
+        }
+
+        #feedback.incorrect {
+            color: #d00000;
+        }
+
+        #quiz-footer {
+            padding: 32px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #next-btn, #restart-btn {
+            background-color: #d00000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #next-btn:hover, #restart-btn:hover {
+            background-color: #a00000;
+        }
+
+        #results-container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        #results-container h2 {
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+        }
+
+        #results-container p {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        /* Hide elements by default */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <div id="quiz-header">
+            <h1>Daily Nebraskan News Quiz</h1>
+        </div>
+
+        <div id="quiz-body" class="">
+            <div id="question-number"></div>
+            <div id="question-text">Loading question...</div>
+            <div id="options-container">
+                </div>
+            <div id="feedback"></div>
+        </div>
+        
+        <div id="quiz-footer" class="">
+            <button id="next-btn">Next Question</button>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>Quiz Complete!</h2>
+            <p id="score-text">Your score will be shown here.</p>
+            <button id="restart-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. JSON Data
+        const allQuestions = [
+            {
+                "questionNumber": 1,
+                "topic": "Nebraska Football",
+                "questionText": "True or False: The win against Northwestern made Nebraska bowl eligible in the month of October for the first time since 2016.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "True"
+            },
+            {
+                "questionNumber": 2,
+                "topic": "Nebraska Football",
+                "questionText": "What was the final score of the Nebraska vs. Northwestern game?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) 21-14",
+                    "B) 24-6",
+                    "C) 28-21",
+                    "D) 21-21"
+                ],
+                "answer": "C",
+                "answerText": "C) 28-21"
+            },
+            {
+                "questionNumber": 3,
+                "topic": "Nebraska Football",
+                "questionText": "According to the article, who is the Big Ten's rushing leader?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Anthony Grant",
+                    "B) Emmett Johnson",
+                    "C) Isaiah Mozee",
+                    "D) Dylan Raiola"
+                ],
+                "answer": "B",
+                "answerText": "B) Emmett Johnson"
+            },
+            {
+                "questionNumber": 4,
+                "topic": "Nebraska Football",
+                "questionText": "True or False: Emmett Johnson is the first Nebraska tailback since Anthony Grant in 2022 to have four 100-yard rushing games in a season.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "True"
+            },
+            {
+                "questionNumber": 5,
+                "topic": "Nebraska Football",
+                "questionText": "What grade did the article give Nebraska's passing attack?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) A-",
+                    "B) B-",
+                    "C) B+",
+                    "D) D+"
+                ],
+                "answer": "B",
+                "answerText": "B) B-"
+            },
+            {
+                "questionNumber": 6,
+                "topic": "Nebraska Football",
+                "questionText": "How many sacks did the Nebraska offensive line allow against Northwestern, one week after allowing nine against Minnesota?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) One",
+                    "B) Nine",
+                    "C) Zero",
+                    "D) Three"
+                ],
+                "answer": "A",
+                "answerText": "A) One"
+            },
+            {
+                "questionNumber": 7,
+                "topic": "Nebraska Football",
+                "questionText": "True or False: Quarterback Dylan Raiola threw an interception when the game was tied 21-21 in the fourth quarter.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "True"
+            },
+            {
+                "questionNumber": 8,
+                "topic": "Nebraska Football",
+                "questionText": "Which player leads the Huskers in receiving and caught a 12-yard touchdown pass in the third quarter?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Emmett Johnson",
+                    "B) Donovan Jones",
+                    "C) Isaiah Mozee",
+                    "D) Nyziah Hunter"
+                ],
+                "answer": "D",
+                "answerText": "D) Nyziah Hunter"
+            },
+            {
+                "questionNumber": 9,
+                "topic": "Nebraska Football",
+                "questionText": "True or False: The Blackshirt defense failed to force any turnovers against Northwestern.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "False"
+            },
+            {
+                "questionNumber": 10,
+                "topic": "Nebraska Football",
+                "questionText": "What grade did the article give Nebraska's special teams unit?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) A",
+                    "B) B-",
+                    "C) C",
+                    "D) A-"
+                ],
+                "answer": "A",
+                "answerText": "A) A"
+            },
+            {
+                "questionNumber": 11,
+                "topic": "Nebraska Football",
+                "questionText": "Who had a 95-yard kickoff return for a touchdown to start the second half?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) JD Spielman",
+                    "B) Nyziah Hunter",
+                    "C) Kenneth Williams",
+                    "D) Donovan Jones"
+                ],
+                "answer": "C",
+                "answerText": "C) Kenneth Williams"
+            },
+            {
+                "questionNumber": 12,
+                "topic": "Nebraska Football",
+                "questionText": "True or False: According to head coach Matt Rhule, the team made a big celebration after the game because they had become bowl eligible, just like they did last year.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "False"
+            },
+            {
+                "questionNumber": 13,
+                "topic": "Nebraska Volleyball",
+                "questionText": "At the time of the article, what was the Nebraska volleyball team's season record?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) 13-7",
+                    "B) 16-0",
+                    "C) 18-0",
+                    "D) 9-0"
+                ],
+                "answer": "C",
+                "answerText": "C) 18-0"
+            },
+            {
+                "questionNumber": 14,
+                "topic": "Nebraska Volleyball",
+                "questionText": "Nebraska has not lost a set since its match on September 16 against which opponent?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Creighton",
+                    "B) Penn State",
+                    "C) Purdue",
+                    "D) Wisconsin"
+                ],
+                "answer": "A",
+                "answerText": "A) Creighton"
+            },
+            {
+                "questionNumber": 15,
+                "topic": "Nebraska Volleyball",
+                "questionText": "True or False: The Huskers' 28-set win streak is the longest in program history.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "False"
+            },
+            {
+                "questionNumber": 16,
+                "topic": "Nebraska Volleyball",
+                "questionText": "Who is the head coach of the Nebraska volleyball team?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Matt Rhule",
+                    "B) Mike Ekeler",
+                    "C) Dani Busboom Kelly",
+                    "D) John Butler"
+                ],
+                "answer": "C",
+                "answerText": "C) Dani Busboom Kelly"
+            },
+            {
+                "questionNumber": 17,
+                "topic": "Nebraska Volleyball",
+                "questionText": "Which junior middle blocker was named the reigning Big Ten Defensive Player of the Week?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Andi Jackson",
+                    "B) Javin Wright",
+                    "C) Nyziah Hunter",
+                    "D) Griffin Wilde"
+                ],
+                "answer": "A",
+                "answerText": "A) Andi Jackson"
+            },
+            {
+                "questionNumber": 18,
+                "topic": "Nebraska Volleyball",
+                "questionText": "True or False: According to the article, Nebraska swept Wisconsin three separate times last year.",
+                "format": "True/False",
+                "options": ["True", "False"],
+                "answer": "True"
+            },
+            {
+                "questionNumber": 19,
+                "topic": "Nebraska Volleyball",
+                "questionText": "Of the 12 regular-season matches Nebraska has left, how many opponents are currently in the AVCA Top 25?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Two",
+                    "B) Five",
+                    "C) Six",
+                    "D) Twelve"
+                ],
+                "answer": "B",
+                "answerText": "B) Five"
+            },
+            {
+                "questionNumber": 20,
+                "topic": "Nebraska Volleyball",
+                "questionText": "Which of the Huskers' remaining opponents is ranked the highest (No. 12)?",
+                "format": "Multiple Choice",
+                "options": [
+                    "A) Wisconsin",
+                    "B) Indiana",
+                    "C) Minnesota",
+                    "D) UCLA"
+                ],
+                "answer": "A",
+                "answerText": "A) Wisconsin"
+            }
+        ];
+
+        // 2. DOM Element References
+        const quizBody = document.getElementById('quiz-body');
+        const quizFooter = document.getElementById('quiz-footer');
+        const resultsContainer = document.getElementById('results-container');
+        
+        const questionNumberEl = document.getElementById('question-number');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const feedbackEl = document.getElementById('feedback');
+        
+        const nextButton = document.getElementById('next-btn');
+        const restartButton = document.getElementById('restart-btn');
+        const scoreTextEl = document.getElementById('score-text');
+
+        // 3. Quiz State Variables
+        let quizQuestions = []; // This will hold the 5 random questions
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answerSelected = false;
+
+        // 4. Quiz Logic
+        
+        /**
+         * Shuffles an array in place (Fisher-Yates shuffle)
+         * @param {Array} array Array to shuffle
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        /**
+         * Starts or restarts the quiz
+         */
+        function startQuiz() {
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Shuffle and pick 5 questions
+            shuffleArray(allQuestions);
+            quizQuestions = allQuestions.slice(0, 5);
+            
+            // Show quiz, hide results
+            quizBody.classList.remove('hidden');
+            quizFooter.classList.remove('hidden');
+            resultsContainer.classList.add('hidden');
+            
+            nextButton.innerText = "Next Question";
+            
+            showQuestion();
+        }
+
+        /**
+         * Displays the current question and options
+         */
+        function showQuestion() {
+            // Reset feedback and button state
+            feedbackEl.textContent = '';
+            feedbackEl.className = '';
+            nextButton.disabled = true;
+            answerSelected = false;
+
+            // Get current question
+            const question = quizQuestions[currentQuestionIndex];
+            
+            // Populate question text
+            questionNumberEl.textContent = `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`;
+            questionTextEl.textContent = question.questionText;
+
+            // Clear old options
+            optionsContainerEl.innerHTML = '';
+
+            // Create new options
+            question.options.forEach((option, index) => {
+                const optionId = `option${index}`;
+                
+                // For Multiple Choice, the option text is "A) Option Text"
+                // For True/False, the option text is just "True" or "False"
+                let optionText = option;
+                
+                // We need to determine the 'value' of the radio button
+                let optionValue;
+                if (question.format === 'True/False') {
+                    optionValue = option; // Value is "True" or "False"
+                } else {
+                    // For "A) Option Text", the value is "A"
+                    optionValue = option.split(')')[0]; 
+                }
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = optionId;
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'answer';
+                radio.id = optionId;
+                radio.value = optionValue;
+                
+                radio.addEventListener('change', () => {
+                    nextButton.disabled = false;
+                    answerSelected = true;
+                    checkAnswer(question);
+                });
+
+                const span = document.createElement('span');
+                span.textContent = optionText;
+
+                label.appendChild(radio);
+                label.appendChild(span);
+                optionsContainerEl.appendChild(label);
+            });
+        }
+        
+        /**
+         * Checks the selected answer and provides immediate feedback
+         */
+        function checkAnswer(question) {
+            const selectedRadio = document.querySelector('input[name="answer"]:checked');
+            if (!selectedRadio) return; // Should be impossible due to button state, but good to check
+            
+            const selectedAnswer = selectedRadio.value;
+            let isCorrect = false;
+
+            if (question.format === 'True/False') {
+                isCorrect = (selectedAnswer === question.answer);
+            } else {
+                isCorrect = (selectedAnswer === question.answer);
+            }
+
+            // Disable all radio buttons after selection
+            document.querySelectorAll('input[name="answer"]').forEach(radio => {
+                radio.disabled = true;
+            });
+            
+            if (isCorrect) {
+                score++;
+                feedbackEl.textContent = "Correct!";
+                feedbackEl.className = 'correct';
+            } else {
+                let correctAnswerText = question.answer;
+                if(question.answerText) {
+                    correctAnswerText = question.answerText;
+                } else if (question.format === 'True/False') {
+                    correctAnswerText = question.answer;
+                }
+                
+                feedbackEl.textContent = `Incorrect. The correct answer is: ${correctAnswerText}`;
+                feedbackEl.className = 'incorrect';
+            }
+        }
+        
+        /**
+         * Moves to the next question or shows the results
+         */
+        function handleNextClick() {
+            if (!answerSelected) return; // Don't do anything if no answer is selected
+            
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < quizQuestions.length) {
+                // More questions left
+                showQuestion();
+                if(currentQuestionIndex === quizQuestions.length - 1) {
+                    nextButton.innerText = "Show Results";
+                }
+            } else {
+                // Quiz is over
+                showResults();
+            }
+        }
+
+        /**
+         * Hides the quiz and displays the final score
+         */
+        function showResults() {
+            quizBody.classList.add('hidden');
+            quizFooter.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            
+            scoreTextEl.textContent = `You got ${score} out of ${quizQuestions.length} questions correct!`;
+        }
+        
+        // 5. Event Listeners
+        nextButton.addEventListener('click', handleNextClick);
+        restartButton.addEventListener('click', startQuiz);
+        
+        // 6. Initial Call to Start
+        startQuiz();
+        
+    </script>
+</body>
+</html>
