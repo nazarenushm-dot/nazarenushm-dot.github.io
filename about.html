@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Hannah Nazarenus</title>
+    <meta name="description" content="Hannah Nazarenus is a University of Nebraska-Lincoln journalism student and Nebraska Public Media news intern covering rural economics, agriculture, food security and elections.">
+    <style>
+        :root {
+            --bg: #f6f3ee;
+            --surface: #ffffff;
+            --ink: #1f1d1a;
+            --muted: #5f5a52;
+            --accent: #b3261e;
+            --rule: #ddd6ca;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #151413;
+                --surface: #1f1d1b;
+                --ink: #f1ede6;
+                --muted: #aaa397;
+                --accent: #ff8a7d;
+                --rule: #34312d;
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Georgia, "Times New Roman", serif;
+            line-height: 1.65;
+            font-size: 1.075rem;
+        }
+        a { color: var(--accent); text-underline-offset: 3px; }
+        a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+        .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        nav { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+        nav .wrap { display: flex; gap: 20px; flex-wrap: wrap; align-items: baseline; font-size: .95rem; }
+        nav .name { font-weight: 700; color: var(--ink); text-decoration: none; margin-right: auto; }
+        nav a { text-decoration: none; color: var(--muted); }
+        nav a:hover, nav a[aria-current] { color: var(--accent); }
+
+        header.hero { padding: 64px 0 40px; }
+        .kicker {
+            text-transform: uppercase; letter-spacing: .14em; font-size: .75rem;
+            color: var(--accent); font-weight: 700; margin: 0 0 14px;
+        }
+        h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.1; margin: 0 0 18px; letter-spacing: -.01em; }
+        .lede { font-size: 1.3rem; line-height: 1.5; color: var(--muted); margin: 0; }
+
+        section { padding: 36px 0; border-top: 1px solid var(--rule); }
+        h2 {
+            font-size: .8rem; text-transform: uppercase; letter-spacing: .14em;
+            margin: 0 0 20px; color: var(--muted);
+        }
+        p { margin: 0 0 1.1em; }
+        p:last-child { margin-bottom: 0; }
+
+        .beats { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 20px 0 0; }
+        .beats li {
+            font-size: .85rem; padding: 5px 12px; border: 1px solid var(--rule);
+            border-radius: 999px; background: var(--surface);
+        }
+
+        .job { margin-bottom: 28px; }
+        .job:last-child { margin-bottom: 0; }
+        .job h3 { margin: 0; font-size: 1.15rem; }
+        .job .meta { margin: 2px 0 8px; color: var(--muted); font-size: .9rem; }
+        .job p { font-size: 1rem; }
+
+        .awards { list-style: none; padding: 0; margin: 0; }
+        .awards li { padding: 12px 0; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; gap: 16px; }
+        .awards li:last-child { border-bottom: 0; }
+        .awards .when { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+
+        .contact a.btn {
+            display: inline-block; margin: 0 10px 10px 0; padding: 10px 18px;
+            border: 1.5px solid var(--accent); border-radius: 6px; text-decoration: none; font-size: .95rem; font-weight: 600;
+        }
+        .contact a.btn:hover { background: var(--accent); color: var(--bg); }
+
+        footer { padding: 32px 0 56px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--rule); }
+
+        @media (max-width: 520px) {
+            header.hero { padding: 44px 0 28px; }
+            .awards li { flex-direction: column; gap: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="sans" aria-label="Main">
+    <div class="wrap">
+        <a class="name" href="index.html">Hannah Nazarenus</a>
+        <a href="index.html">Home</a>
+        <a href="about.html" aria-current="page">About</a>
+    </div>
+</nav>
+
+<main class="wrap">
+    <header class="hero">
+        <p class="kicker sans">About</p>
+        <h1>Hi, I'm Hannah.</h1>
+        <p class="lede">I'm a Nebraska journalist who tells stories about the people, places and policies that shape life in the Midwest.</p>
+    </header>
+
+    <section>
+        <h2 class="sans">Who I am</h2>
+        <p>I'm finishing my Bachelor of Journalism at the University of Nebraska-Lincoln this December, with a minor in Political Science. I report on Nebraska because I care how people here live, work and vote.</p>
+        <p>Right now I'm a news intern at Nebraska Public Media, where I produce stories for digital and broadcast. I pitch my own ideas, interview sources and turn my reporting into broadcast-ready scripts. Before that, I wrote opinion for The Daily Nebraskan and covered breaking news and local government at the North Platte Telegraph.</p>
+        <ul class="beats sans" aria-label="Beats I cover">
+            <li>Rural economics</li>
+            <li>Agriculture</li>
+            <li>Food security</li>
+            <li>Elections</li>
+            <li>Community</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 class="sans">Where I've worked</h2>
+
+        <div class="job">
+            <h3>News Intern, Nebraska Public Media</h3>
+            <p class="meta sans">Lincoln, NE · September 2025 – Present</p>
+            <p>Producing news across digital and broadcast formats on rural economics, agriculture, food security, elections and community in Nebraska.</p>
+        </div>
+
+        <div class="job">
+            <h3>Opinion Columnist, The Daily Nebraskan</h3>
+            <p class="meta sans">Lincoln, NE · August 2024 – May 2025</p>
+            <p>Wrote opinion pieces on campus, local and national issues, engaged with readers online, and worked with editors to refine columns and hit deadlines.</p>
+        </div>
+
+        <div class="job">
+            <h3>News Intern, North Platte Telegraph</h3>
+            <p class="meta sans">North Platte, NE · May – August 2024</p>
+            <p>Reported on breaking news, local government and community events for print and digital, interviewing officials, business owners and residents in AP style.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="sans">Recognition</h2>
+        <ul class="awards">
+            <li><span>Rural Journalism Fellowship Award</span><span class="when sans">September 2026</span></li>
+            <li><span>The Daily Nebraskan, 1st Place Campus Issue Award</span><span class="when sans">January 2025</span></li>
+            <li><span>The Daily Nebraskan, 2nd Place National Issue Award</span><span class="when sans">January 2025</span></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 class="sans">Beyond the newsroom</h2>
+        <p>I've been a member of Alpha Omicron Pi since 2022, where I've taken part in philanthropy, leadership development and committees for event planning, recruitment and membership. It's also where I've built mentorship connections with alumni.</p>
+        <p>You'll also find my work on this site, including interactive projects like <a href="index.html">the Temple Building then-and-now slider</a> and <a href="husker-trail/index.html">The Husker Trail</a>.</p>
+    </section>
+
+    <section class="contact">
+        <h2 class="sans">Let's talk</h2>
+        <p>Have a story idea, a tip or an opportunity? I'd love to hear from you.</p>
+        <p class="sans">
+            <a class="btn" href="mailto:nazarenushm@gmail.com">Email me</a>
+            <a class="btn" href="https://www.linkedin.com/in/hannah-nazarenus-11a192276" target="_blank" rel="noopener">LinkedIn</a>
+        </p>
+    </section>
+</main>
+
+<footer class="sans">
+    <div class="wrap">© 2026 Hannah Nazarenus</div>
+</footer>
+
+</body>
+</html>
