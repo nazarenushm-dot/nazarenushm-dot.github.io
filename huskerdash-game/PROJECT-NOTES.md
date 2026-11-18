@@ -39,6 +39,9 @@ Story links and quiz questions are in game.js in the LEVELS list.
 - Locker: name your worker, pick skin/hair, and buy shirts, hats (incl. a corn hat) and extras.
   A Name Tag shows your name on the floor and in your shift headlines.
 - Shop and Locker can be opened from the title screen too.
+- End-of-shift buttons: Continue (to the quiz and shop), Redo Shift / Try Again, Menu, and
+  Restart Everything (also in the pause menu and on the title screen). Restarting shows a
+  confirm screen and can keep your name, skin and hair.
 - Progress saves in the browser
 
 ## Files

@@ -1190,7 +1190,7 @@ function showTitle() {
         </button>`).join('')}
     </div>
     <p class="small" style="margin-top:12px">All stories are from the fall 2026 semester.</p>
-    <p class="small">Savings: $${save.bank} · <a href="#" data-go="reset" style="color:inherit">reset progress</a></p>
+    <p class="small">Savings: $${save.bank} · <a href="#" data-go="resetask" data-from="title" style="color:inherit">⟲ restart everything</a></p>
   `);
 }
 
@@ -1275,6 +1275,7 @@ function showPause() {
     <button class="btn" data-go="resume">Resume</button>
     <button class="btn secondary" data-go="restart">Restart Shift</button>
     <button class="btn secondary" data-go="title">Quit to Menu</button>
+    <div><button class="btn danger" data-go="resetask" data-from="pause">⟲ Restart Everything</button></div>
   `);
 }
 
@@ -1305,9 +1306,13 @@ function endLevel() {
     <div class="headline"><span class="small">TOMORROW'S HEADLINE (in your dreams)</span><b>${makeHeadline(S, stars)}</b></div>
     <p>${stars ? `You beat the $${L.goal} goal${stars === 2 ? ' and hit Expert' : ''}! $${S.money} added to your savings.` : `You needed $${L.goal}. Your $${S.money} still goes into savings, so try again, maybe with an upgrade.`}</p>
     ${stars
-      ? `<button class="btn" data-go="quiz" data-level="${idx}">📰 DN Pop Quiz →</button>`
-      : `<button class="btn" data-go="intro" data-level="${idx}">Try Again</button><button class="btn secondary" data-go="shop" data-level="${idx}">Upgrade Shop</button>`}
-    <button class="btn secondary" data-go="title">Menu</button>
+      ? `<button class="btn" data-go="quiz" data-level="${idx}">Continue → DN Pop Quiz</button>`
+      : `<button class="btn secondary" data-go="shop" data-level="${idx}">Upgrade Shop</button>`}
+    <div class="end-actions">
+      <button class="btn secondary" data-go="intro" data-level="${idx}">↻ ${stars ? 'Redo Shift' : 'Try Again'}</button>
+      <button class="btn secondary" data-go="title">Menu</button>
+      <button class="btn danger" data-go="resetask" data-from="results">⟲ Restart Everything</button>
+    </div>
   `);
 }
 
@@ -1341,6 +1346,31 @@ function showQuiz(idx, picked) {
     <div class="quiz-opts">${Q.options.map((o, i) => `<button class="shift quiz-opt ${picked !== undefined && i === Q.answer ? 'right' : ''} ${picked === i && i !== Q.answer ? 'wrong' : ''}" ${picked !== undefined ? 'disabled' : `data-go="answer" data-level="${idx}" data-i="${i}"`}>${o}</button>`).join('')}</div>
     ${feedback || '<p class="small">Right answer = <b>+$25</b> savings (first try counts once per shift).</p>'}
   `);
+}
+
+let resetFrom = 'title', lastResultsHtml = '';
+function showResetConfirm(from) {
+  resetFrom = from;
+  if (from === 'results') lastResultsHtml = overlay.innerHTML;
+  screen = 'confirm';
+  showOverlay(`
+    <h2>⟲ Restart Everything?</h2>
+    <p>This starts your semester over from <b>Shift 1</b>. You'll lose:</p>
+    <ul class="lose-list">
+      <li>All unlocked shifts and stars (${save.stars.reduce((a, b) => a + b, 0)} ★)</li>
+      <li>Your savings ($${save.bank})</li>
+      <li>Every shop upgrade (rank: ${rankName()})</li>
+      <li>Outfits you bought in the Locker</li>
+    </ul>
+    <label class="keep"><input type="checkbox" id="keep-look" checked> Keep my name, skin and hair</label>
+    <div>
+      <button class="btn secondary" data-go="resetno">No, go back</button>
+      <button class="btn danger" data-go="resetyes">Yes, start over</button>
+    </div>
+  `);
+}
+function showResultsAgain() {
+  overlay.innerHTML = lastResultsHtml; overlay.classList.add('show');
 }
 
 function showShop(nextIdx) {
@@ -1455,10 +1485,21 @@ overlay.addEventListener('click', e => {
     }
     case 'shopmenu': showShop(null); break;
     case 'lockermenu': lockerReturn = 'title'; showLocker(); break;
-    case 'reset':
-      if (b.dataset.confirm) { save = freshSave(); persist(); showTitle(); }
-      else { b.textContent = 'click again to confirm reset'; b.dataset.confirm = '1'; }
+    case 'resetask': showResetConfirm(b.dataset.from); break;
+    case 'resetno':
+      if (resetFrom === 'pause') { screen = 'paused'; showPause(); }
+      else if (resetFrom === 'results' && S) { screen = 'results'; showResultsAgain(); }
+      else showTitle();
       break;
+    case 'resetyes': {
+      const keepLook = document.getElementById('keep-look')?.checked;
+      const lk = look();
+      save = freshSave();
+      if (keepLook) save.look = { skin: lk.skin, hair: lk.hair, name: lk.name, shirt: 'scarlet', hat: 'cap', extra: 'none' };
+      persist();
+      showIntro(0);
+      break;
+    }
   }
 });
 
