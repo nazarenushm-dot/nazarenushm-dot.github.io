@@ -12,15 +12,15 @@ let ctx = canvas.getContext('2d');
  * DATA: customer types, shelves, levels, upgrades
  * ============================================================ */
 const TYPES = {
-  freshman: { name: 'Freshman',      color: '#7FB3D5', decay: 0.10, eat: 1.25, tip: 1.0, sizes: [1, 2], acc: 'lanyard',
+  freshman: { name: 'Freshman',      color: '#7FB3D5', decay: 0.055, eat: 1.25, tip: 1.0, sizes: [1, 2], acc: 'lanyard',
               desc: 'Patient, but slow.' },
-  athlete:  { name: 'Athlete',       color: '#F5B041', decay: 0.16, eat: 0.6,  tip: 1.3, sizes: [1, 2], acc: 'band',
+  athlete:  { name: 'Athlete',       color: '#F5B041', decay: 0.08, eat: 0.6,  tip: 1.3, sizes: [1, 2], acc: 'band',
               desc: 'Finishes fast, tips well.' },
-  grad:     { name: 'Grad Student',  color: '#8E7CC3', decay: 0.25, eat: 1.0,  tip: 1.7, sizes: [1],    acc: 'glasses',
+  grad:     { name: 'Grad Student',  color: '#8E7CC3', decay: 0.13, eat: 1.0,  tip: 1.7, sizes: [1],    acc: 'glasses',
               desc: 'Very impatient. Very generous.' },
-  group:    { name: 'Study Group',   color: '#58D68D', decay: 0.13, eat: 1.1,  tip: 1.1, sizes: [3, 4], acc: 'none',
+  group:    { name: 'Study Group',   color: '#58D68D', decay: 0.07, eat: 1.1,  tip: 1.1, sizes: [3, 4], acc: 'none',
               desc: 'Needs a 4-seat table.' },
-  fans:     { name: 'Game Day Fans', color: '#E03C31', decay: 0.18, eat: 0.8,  tip: 1.25, sizes: [3, 4], acc: 'paint',
+  fans:     { name: 'Game Day Fans', color: '#E03C31', decay: 0.095, eat: 0.8,  tip: 1.25, sizes: [3, 4], acc: 'paint',
               desc: 'Loud, hungry, kickoff is soon!' },
 };
 
@@ -49,7 +49,7 @@ const LEVELS = [
     tables: [{ spot: 0, seats: 2 }, { spot: 1, seats: 2 }, { spot: 4, seats: 4 }],
     customers: 8, spawn: [7, 10], cook: [3, 4.5], pace: 0.9,
     mix: { freshman: 5, athlete: 3, group: 1 },
-    goal: 120, expert: 200,
+    goal: 120, expert: 220,
     story: {
       title: 'Food frenzy: a battle of the UNL dining halls',
       url: DN + '/culture/food-frenzy-a-battle-of-the-unl-dining-halls/article_51472e3a-28c7-439d-8ed0-50dd4ee03110.html',
@@ -66,7 +66,7 @@ const LEVELS = [
     tables: [{ spot: 0, seats: 2 }, { spot: 1, seats: 2 }, { spot: 3, seats: 4 }, { spot: 4, seats: 2 }],
     customers: 12, spawn: [5, 7.5], cook: [3.5, 5], pace: 1.0,
     mix: { freshman: 3, athlete: 3, group: 2, grad: 2 },
-    goal: 220, expert: 330,
+    goal: 220, expert: 340,
     story: {
       title: 'Dig in to Harper Dining Hall\'s late night menu',
       url: DN + '/culture/dig-in-to-harper-dining-hall-s-late-night-menu/article_61da9724-ca41-444b-a14f-21089fa32954.html',
@@ -83,7 +83,7 @@ const LEVELS = [
     tables: [{ spot: 0, seats: 2 }, { spot: 1, seats: 2 }, { spot: 2, seats: 2 }, { spot: 3, seats: 4 }, { spot: 4, seats: 4 }],
     customers: 14, spawn: [4.2, 6.2], cook: [3.5, 5], pace: 1.1,
     mix: { grad: 4, freshman: 3, athlete: 2, group: 3 },
-    goal: 260, expert: 400,
+    goal: 280, expert: 420,
     story: {
       title: 'Nebraska Union to open new dining options in spring 2027 after delays',
       url: DN + '/news/nebraska-union-to-open-new-dining-options-in-spring-2027-after-delays/article_1f908b50-961d-4838-ba8b-e999b6fed244.html',
@@ -100,7 +100,7 @@ const LEVELS = [
     tables: [{ spot: 0, seats: 2 }, { spot: 1, seats: 4 }, { spot: 2, seats: 2 }, { spot: 3, seats: 4 }, { spot: 4, seats: 4 }, { spot: 5, seats: 2 }],
     customers: 18, spawn: [3.6, 5.4], cook: [3, 4.5], pace: 1.05,
     mix: { fans: 5, athlete: 2, freshman: 2, grad: 1 },
-    goal: 340, expert: 540,
+    goal: 400, expert: 620,
     story: {
       title: 'RODRIGUEZ: Nebraska football dominates Bowling Green, but wants more',
       url: DN + '/sports/rodriguez-nebraska-football-dominates-bowling-green-but-wants-more/article_5e85701c-7638-4de1-98f8-7fde0194cf88.html',
@@ -117,7 +117,7 @@ const LEVELS = [
     tables: [{ spot: 0, seats: 2 }, { spot: 1, seats: 2 }, { spot: 2, seats: 2 }, { spot: 3, seats: 4 }, { spot: 4, seats: 4 }, { spot: 5, seats: 2 }],
     customers: 16, spawn: [3.8, 5.6], pace: 1.15,
     mix: { grad: 4, freshman: 3, athlete: 2, group: 3 },
-    goal: 300, expert: 460,
+    goal: 330, expert: 500,
     story: {
       title: 'University of Nebraska-Lincoln to replace Love Library Dunkin\' in 2027',
       url: DN + '/news/university-of-nebraska-lincoln-to-replace-love-library-dunkin-in-2027/article_ee302f47-dc6b-4009-bfb8-052fabcb7621.html',
@@ -273,8 +273,8 @@ function text(str, x, y, size = 14, color = '#2B2B2B', align = 'center', weight 
  * STATIONS (positions depend on mode)
  * ============================================================ */
 const DINING_ST = {
-  kitchen: { x: 790, y: 24,  w: 150, h: 120, stand: { x: 765, y: 90 } },
-  pickup:  { x: 790, y: 168, w: 150, h: 190, stand: { x: 765, y: 262 } },
+  kitchen: { x: 786, y: 8,   w: 166, h: 152, stand: { x: 762, y: 92 } },
+  pickup:  { x: 786, y: 170, w: 166, h: 190, stand: { x: 762, y: 262 } },
   dish:    { x: 790, y: 430, w: 150, h: 100, stand: { x: 765, y: 480 } },
 };
 const LIB_ST = {
@@ -283,7 +283,7 @@ const LIB_ST = {
 };
 function plateSlotPos(i) {
   const st = DINING_ST.pickup;
-  return { x: st.x + 42 + (i % 2) * 66, y: st.y + 52 + Math.floor(i / 2) * 52 };
+  return { x: st.x + 46 + (i % 2) * 70, y: st.y + 62 + Math.floor(i / 2) * 46 };
 }
 const LINE_SLOT = i => ({ x: 14, y: 30 + i * 122, w: 168, h: 112 });
 const MAX_LINE = 4;
@@ -313,6 +313,7 @@ function startLevel(idx) {
     maxSeats: Math.max(...L.tables.map(t => t.seats)),
     extraTables: lvl('tables'),
     seenHint: {}, flashed: false, boost: null,
+    chef: { x: 902, deliver: 0, plateColor: null, flip: 0 }, steam: [],
   };
   selected = null; drag = null;
   updateHud();
@@ -531,7 +532,7 @@ function arrive(q) {
 /* ============================================================
  * UPDATE
  * ============================================================ */
-const DECAY_STATE = { line: 0.7, ready: 1.0, waiting: 0.75, paying: 0.9 };
+const DECAY_STATE = { line: 0.6, ready: 1.0, waiting: 0.7, paying: 0.8 };
 
 function update(dt) {
   if (!S || screen !== 'play') return;
@@ -578,6 +579,7 @@ function update(dt) {
     if (c.t <= 0 && S.plates.length < 6) {
       const g = groupById(c.groupId);
       S.plates.push({ id: S.nextId++, groupId: c.groupId, table: c.table, color: g ? g.food : pick(FOODS) });
+      S.chef.deliver = 0.9; S.chef.plateColor = S.plates[S.plates.length - 1].color;
       S.cooking.splice(i, 1); i--;
       beep(1320, 0.05, 'triangle', 0.08);
     }
@@ -588,6 +590,18 @@ function update(dt) {
     pl.stale = (pl.stale || 0) + dt;
     return pl.stale < 6;
   });
+
+  // chef animation
+  if (S.mode === 'dining') {
+    const ch = S.chef;
+    if (ch.deliver > 0) ch.deliver -= dt;
+    const target = ch.deliver > 0 ? 930 : (S.cooking.length ? 868 : 902);
+    ch.x += clamp(target - ch.x, -140 * dt, 140 * dt);
+    ch.flip += dt;
+    if (S.cooking.length && Math.random() < dt * 9) S.steam.push({ x: 800 + Math.random() * 46, y: 108, t: 0 });
+    for (const st of S.steam) st.t += dt;
+    S.steam = S.steam.filter(st => st.t < 1.4);
+  }
 
   // player
   const p = S.player;
@@ -665,6 +679,12 @@ function drawFloor() {
   if (th === 'union') text('THE UNION', 475, 264, 34, 'rgba(0,0,0,.06)', 'center', '900');
 }
 
+function drawLighting() {
+  const v = ctx.createRadialGradient(W * 0.45, H * 0.45, 120, W * 0.45, H * 0.5, 620);
+  v.addColorStop(0, 'rgba(255,240,210,0.08)'); v.addColorStop(1, 'rgba(40,20,10,0.28)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+}
+
 function drawLineArea() {
   ctx.fillStyle = 'rgba(208,0,0,.08)'; rr(8, 8, 180, 544, 14); ctx.fill();
   ctx.strokeStyle = 'rgba(208,0,0,.35)'; ctx.setLineDash([6, 6]); ctx.lineWidth = 2; rr(8, 8, 180, 544, 14); ctx.stroke(); ctx.setLineDash([]);
@@ -696,11 +716,18 @@ function drawGroupMembers(g, cx, cy, scale = 1) {
 
 function drawPerson(x, y, m, shirt, acc, scale = 1, flip = 1) {
   ctx.save(); ctx.translate(x, y); ctx.scale(scale * flip, scale);
-  // body
+  // body (with shading for depth)
   ctx.fillStyle = shirt; rr(-11, -2, 22, 22, 8); ctx.fill();
+  let sh = ctx.createLinearGradient(-11, 0, 11, 0);
+  sh.addColorStop(0, 'rgba(255,255,255,.18)'); sh.addColorStop(0.45, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(0,0,0,.22)');
+  ctx.fillStyle = sh; rr(-11, -2, 22, 22, 8); ctx.fill();
   if (acc === 'apron') { ctx.fillStyle = '#F5F1E7'; rr(-7, 3, 14, 16, 3); ctx.fill(); }
-  // head
+  // neck shadow + head
+  ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(0, -2, 7, 2.5, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = m.skin; circle(0, -12, 9.5); ctx.fill();
+  sh = ctx.createRadialGradient(-3, -16, 1, 0, -12, 10);
+  sh.addColorStop(0, 'rgba(255,255,255,.28)'); sh.addColorStop(1, 'rgba(0,0,0,.12)');
+  ctx.fillStyle = sh; circle(0, -12, 9.5); ctx.fill();
   ctx.fillStyle = m.hair; ctx.beginPath(); ctx.arc(0, -14, 9.5, Math.PI, 0); ctx.fill();
   ctx.fillStyle = '#222'; circle(-3.3, -11, 1.4); ctx.fill(); circle(3.3, -11, 1.4); ctx.fill();
   ctx.strokeStyle = '#7a4a3a'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, -8, 3, 0.2, Math.PI - 0.2); ctx.stroke();
@@ -753,16 +780,24 @@ function drawTable(t) {
     rr(t.x - 88, t.y - 66, 176, 112, 16); ctx.fill();
     if (ok) { ctx.strokeStyle = '#27AE60'; ctx.lineWidth = 2.5; ctx.setLineDash([6, 4]); rr(t.x - 88, t.y - 66, 176, 112, 16); ctx.stroke(); ctx.setLineDash([]); }
   }
-  // chairs
-  for (const s of seats) { ctx.fillStyle = lib ? '#5D4037' : '#B03A2E'; rr(s.x - 13, s.y - 4, 26, 24, 6); ctx.fill(); }
+  // floor shadow under the whole table group
+  ctx.fillStyle = 'rgba(0,0,0,.13)'; ctx.beginPath(); ctx.ellipse(t.x + 4, t.y + 30, t.seats === 4 ? 92 : 86, 18, 0, 0, Math.PI * 2); ctx.fill();
+  // chairs (seat + backrest + legs)
+  for (const s of seats) drawChair(s.x, s.y, lib, s.y < t.y - 20 ? 'top' : (s.x < t.x ? 'left' : 'right'));
   // people seated (behind table for top seats)
   if (g) seats.slice(0, g.size).forEach((s, i) => {
     if (t.seats === 4 && i < 2) drawPerson(s.x, s.y, g.members[i], TYPES[g.type].color, TYPES[g.type].acc);
   });
-  // tabletop
-  ctx.fillStyle = 'rgba(0,0,0,.12)'; rr(t.x - 50, t.y - 24, 100, 58, 10); ctx.fill();
-  ctx.fillStyle = lib ? '#8D6E63' : '#D7B98E'; rr(t.x - 50, t.y - 28, 100, 56, 10); ctx.fill();
-  ctx.strokeStyle = lib ? '#5D4037' : '#A67C52'; ctx.lineWidth = 2; ctx.stroke();
+  // tabletop with thickness and legs (fake 3D)
+  const top = lib ? '#8D6E63' : '#D7B98E', side = lib ? '#5D4037' : '#A67C52';
+  ctx.fillStyle = shadeHex(side, -30);
+  ctx.fillRect(t.x - 42, t.y + 20, 7, 16); ctx.fillRect(t.x + 35, t.y + 20, 7, 16);
+  ctx.fillStyle = side; rr(t.x - 50, t.y - 22, 100, 56, 10); ctx.fill();
+  ctx.fillStyle = top; rr(t.x - 50, t.y - 30, 100, 54, 10); ctx.fill();
+  const gl = ctx.createLinearGradient(t.x, t.y - 30, t.x, t.y + 24);
+  gl.addColorStop(0, 'rgba(255,255,255,.28)'); gl.addColorStop(1, 'rgba(0,0,0,.05)');
+  ctx.fillStyle = gl; rr(t.x - 50, t.y - 30, 100, 54, 10); ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 1.5; rr(t.x - 50, t.y - 30, 100, 54, 10); ctx.stroke();
   text(String(t.n), t.x - 38, t.y - 16, 11, 'rgba(0,0,0,.45)');
   if (t.bought) text('NEW', t.x + 32, t.y - 16, 9, '#1E8449', 'center', '900');
   if (g) seats.slice(0, g.size).forEach((s, i) => {
@@ -787,6 +822,16 @@ function drawTable(t) {
     drawHearts(t.x - 12, t.y - 84, g.hearts);
     bubble(t.x + 50, t.y - 62, g.state, g);
   }
+}
+
+function drawChair(x, y, lib, side) {
+  const c = lib ? '#5D4037' : '#B03A2E', dark = shadeHex(c, -35);
+  ctx.fillStyle = dark; ctx.fillRect(x - 10, y + 14, 3, 9); ctx.fillRect(x + 7, y + 14, 3, 9);
+  ctx.fillStyle = dark; rr(x - 13, y + 2, 26, 16, 5); ctx.fill();
+  ctx.fillStyle = c; rr(x - 13, y - 2, 26, 15, 5); ctx.fill();
+  ctx.fillStyle = shadeHex(c, 20);
+  if (side === 'top') { rr(x - 13, y - 14, 26, 9, 4); ctx.fill(); }
+  else { rr(side === 'left' ? x - 16 : x + 10, y - 16, 6, 30, 3); ctx.fill(); }
 }
 
 function bubble(x, y, state, g) {
@@ -829,47 +874,144 @@ function drawOpenBook(x, y, hex) {
   for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(x - 17, y - 6 + i * 5); ctx.lineTo(x - 4, y - 6 + i * 5); ctx.moveTo(x + 4, y - 6 + i * 5); ctx.lineTo(x + 17, y - 6 + i * 5); ctx.stroke(); }
 }
 
+function steelGrad(x, y, w, h) {
+  const g = ctx.createLinearGradient(x, y, x, y + h);
+  g.addColorStop(0, '#E3E8EB'); g.addColorStop(0.5, '#C5CED3'); g.addColorStop(1, '#A9B4BA');
+  return g;
+}
+function drawChef(x, y, flipT, cooking, carrying) {
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0, 30, 15, 4, 0, 0, Math.PI * 2); ctx.fill();
+  drawPerson(0, 0, { skin: '#C68642', hair: '#2C1B10' }, '#FFFFFF', 'none', 1.2);
+  // double-breasted buttons + red neckerchief
+  ctx.fillStyle = '#bbb'; [[-4, 6], [4, 6], [-4, 13], [4, 13]].forEach(([bx, by]) => { circle(bx * 1.2, by * 1.2, 1.3); ctx.fill(); });
+  ctx.fillStyle = '#D00000'; ctx.beginPath(); ctx.moveTo(-6, -3); ctx.lineTo(6, -3); ctx.lineTo(0, 4); ctx.fill();
+  // tall chef hat
+  ctx.fillStyle = '#fff'; ctx.fillRect(-9, -36, 18, 14);
+  circle(-6, -38, 6); ctx.fill(); circle(6, -38, 6); ctx.fill(); circle(0, -42, 7); ctx.fill();
+  ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.strokeRect(-9, -26, 18, 4);
+  // arm holding a pan or a plate
+  if (cooking && !carrying) {
+    const lift = Math.max(0, Math.sin(flipT * 7)) * 6;
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-8, 2); ctx.lineTo(-20, -10 - lift); ctx.stroke();
+    ctx.fillStyle = '#333'; ctx.beginPath(); ctx.ellipse(-32, -12 - lift, 11, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillRect(-23, -14 - lift, 8, 3);
+    ctx.fillStyle = '#E67E22'; circle(-34, -15 - lift * (lift > 3 ? 2.2 : 1), 2.5); ctx.fill(); circle(-29, -15 - lift * (lift > 3 ? 1.8 : 1), 2.2); ctx.fill();
+  } else if (carrying) {
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(8, 4); ctx.lineTo(20, 0); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(26, -2, 11, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = carrying; ctx.beginPath(); ctx.ellipse(26, -4, 6, 3, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
 function drawDiningStations() {
   const k = DINING_ST.kitchen, pu = DINING_ST.pickup, d = DINING_ST.dish;
-  // kitchen window
-  ctx.fillStyle = '#5D6D7E'; rr(k.x, k.y, k.w, k.h, 12); ctx.fill();
-  ctx.fillStyle = '#ABB2B9'; rr(k.x + 8, k.y + 26, k.w - 16, k.h - 34, 8); ctx.fill();
-  text('KITCHEN', k.x + k.w / 2, k.y + 14, 13, '#fff', 'center', '900');
-  // cooking orders
-  S.cooking.slice(0, 6).forEach((c, i) => {
-    const cx = k.x + 16 + (i % 3) * 42, cy = k.y + 36 + Math.floor(i / 3) * 40;
-    ctx.fillStyle = '#fff'; rr(cx, cy, 36, 32, 4); ctx.fill();
-    text('T' + c.table, cx + 18, cy + 10, 11, '#333');
-    ctx.fillStyle = '#ddd'; ctx.fillRect(cx + 4, cy + 22, 28, 5);
-    ctx.fillStyle = '#E67E22'; ctx.fillRect(cx + 4, cy + 22, 28 * clamp(1 - c.t / c.total, 0, 1), 5);
-  });
-  if (S.tickets.length) {
-    ctx.fillStyle = '#FFF59D'; rr(k.x - 30, k.y + 6, 26, 30, 4); ctx.fill();
-    text(String(S.tickets.length), k.x - 17, k.y + 22, 14, '#333', 'center', '900');
+  const now = performance.now() / 1000;
+  // ---- kitchen: back wall, hood, stove, chef, pass counter
+  ctx.fillStyle = 'rgba(0,0,0,.22)'; rr(k.x + 4, k.y + 6, k.w, k.h, 12); ctx.fill();
+  ctx.save(); rr(k.x, k.y, k.w, k.h, 12); ctx.clip();
+  // white subway-tile wall
+  ctx.fillStyle = '#F4F6F6'; ctx.fillRect(k.x, k.y, k.w, k.h);
+  ctx.strokeStyle = '#D5DBDB'; ctx.lineWidth = 1;
+  for (let yy = k.y; yy < k.y + 100; yy += 10) {
+    ctx.beginPath(); ctx.moveTo(k.x, yy); ctx.lineTo(k.x + k.w, yy); ctx.stroke();
+    for (let xx = k.x + ((yy / 10) % 2 ? 0 : 10); xx < k.x + k.w; xx += 20) { ctx.beginPath(); ctx.moveTo(xx, yy); ctx.lineTo(xx, yy + 10); ctx.stroke(); }
   }
-  // pickup counter
-  ctx.fillStyle = '#B0BEC5'; rr(pu.x, pu.y, pu.w, pu.h, 12); ctx.fill();
-  ctx.fillStyle = '#CFD8DC'; rr(pu.x + 6, pu.y + 24, pu.w - 12, pu.h - 30, 8); ctx.fill();
-  text('FOOD PICKUP', pu.x + pu.w / 2, pu.y + 13, 12, '#37474F', 'center', '900');
+  // kitchen floor
+  ctx.fillStyle = '#8D99A0'; ctx.fillRect(k.x, k.y + 100, k.w, k.h - 100);
+  // ticket rail with orders cooking
+  ctx.fillStyle = '#9AA5AB'; ctx.fillRect(k.x + 6, k.y + 20, k.w - 12, 4);
+  text('KITCHEN', k.x + k.w / 2, k.y + 10, 11, '#7F8C8D', 'center', '900');
+  S.cooking.slice(0, 6).forEach((c, i) => {
+    const cx = k.x + 10 + i * 25, cy = k.y + 22;
+    ctx.fillStyle = '#FFFDE7'; ctx.fillRect(cx, cy, 22, 30);
+    ctx.strokeStyle = '#E0D9A8'; ctx.strokeRect(cx, cy, 22, 30);
+    text('T' + c.table, cx + 11, cy + 9, 9, '#333');
+    ctx.fillStyle = '#ddd'; ctx.fillRect(cx + 3, cy + 20, 16, 4);
+    ctx.fillStyle = '#E67E22'; ctx.fillRect(cx + 3, cy + 20, 16 * clamp(1 - c.t / c.total, 0, 1), 4);
+  });
+  // range hood
+  ctx.fillStyle = '#B0BBC0'; ctx.beginPath(); ctx.moveTo(k.x + 2, k.y + 56); ctx.lineTo(k.x + 62, k.y + 56); ctx.lineTo(k.x + 54, k.y + 66); ctx.lineTo(k.x + 10, k.y + 66); ctx.fill();
+  // stove (top + front)
+  ctx.fillStyle = '#2F3A40'; ctx.fillRect(k.x + 4, k.y + 92, 58, 6);
+  ctx.fillStyle = steelGrad(k.x + 4, k.y + 98, 58, 40); ctx.fillRect(k.x + 4, k.y + 98, 58, 40);
+  ctx.fillStyle = '#333'; ctx.fillRect(k.x + 12, k.y + 108, 42, 18);
+  ctx.fillStyle = '#555'; circle(k.x + 14, k.y + 132, 2.5); ctx.fill(); circle(k.x + 33, k.y + 132, 2.5); ctx.fill(); circle(k.x + 52, k.y + 132, 2.5); ctx.fill();
+  // flames + pots when cooking
+  const cooking = S.cooking.length > 0;
+  [k.x + 20, k.x + 46].forEach((bx, i) => {
+    if (cooking) {
+      for (let f = -1; f <= 1; f++) {
+        const fh = 5 + Math.sin(now * 18 + f * 2 + i) * 2;
+        ctx.fillStyle = f === 0 ? '#F5B041' : '#E74C3C';
+        ctx.beginPath(); ctx.moveTo(bx + f * 5 - 3, k.y + 92); ctx.quadraticCurveTo(bx + f * 5, k.y + 92 - fh * 1.6, bx + f * 5 + 3, k.y + 92); ctx.fill();
+      }
+    }
+    ctx.fillStyle = '#222'; ctx.fillRect(bx - 12, k.y + 91, 24, 2); // grate
+    if (i === 0) { ctx.fillStyle = '#7F8C8D'; rr(bx - 11, k.y + 72, 22, 14, 3); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(bx - 9, k.y + 74, 18, 2); }
+  });
+  // steam
+  for (const st of S.steam) {
+    ctx.fillStyle = `rgba(255,255,255,${0.55 * (1 - st.t / 1.4)})`;
+    circle(st.x + Math.sin(st.t * 5) * 4, st.y - 30 - st.t * 30, 4 + st.t * 5); ctx.fill();
+  }
+  // chef (behind the pass counter)
+  drawChef(S.chef.x, k.y + 104, S.chef.flip, cooking && Math.abs(S.chef.x - 868) < 6, S.chef.deliver > 0 ? S.chef.plateColor : null);
+  // pass counter front edge
+  ctx.fillStyle = steelGrad(k.x, k.y + 136, k.w, 16); ctx.fillRect(k.x + 64, k.y + 132, k.w - 64, 20);
+  ctx.fillStyle = '#E8EDEF'; ctx.fillRect(k.x + 64, k.y + 128, k.w - 64, 5);
+  ctx.restore();
+  ctx.strokeStyle = '#7F8C8D'; ctx.lineWidth = 2; rr(k.x, k.y, k.w, k.h, 12); ctx.stroke();
+  // tickets waiting in your hand
+  if (S.tickets.length) {
+    ctx.fillStyle = '#FFF59D'; rr(k.x - 32, k.y + 10, 26, 30, 4); ctx.fill();
+    text(String(S.tickets.length), k.x - 19, k.y + 25, 14, '#333', 'center', '900');
+    text('drop here', k.x - 19, k.y + 50, 9, '#555', 'center', '700');
+  }
+
+  // ---- pickup counter: steel top + front face + heat lamps
+  ctx.fillStyle = 'rgba(0,0,0,.22)'; rr(pu.x + 4, pu.y + 6, pu.w, pu.h, 12); ctx.fill();
+  ctx.fillStyle = '#7B868C'; rr(pu.x, pu.y + 14, pu.w, pu.h - 14, 12); ctx.fill();          // front face
+  ctx.fillStyle = steelGrad(pu.x, pu.y, pu.w, pu.h - 18); rr(pu.x, pu.y, pu.w, pu.h - 18, 12); ctx.fill(); // top
+  ctx.fillStyle = '#37474F'; rr(pu.x + 10, pu.y + 6, pu.w - 20, 18, 6); ctx.fill();
+  text('FOOD PICKUP', pu.x + pu.w / 2, pu.y + 15, 11, '#fff', 'center', '900');
+  // heat lamp glow
+  for (let i = 0; i < 2; i++) {
+    const lx = pu.x + 46 + i * 70;
+    const glow = ctx.createRadialGradient(lx, pu.y + 40, 2, lx, pu.y + 90, 70);
+    glow.addColorStop(0, 'rgba(255,170,60,.35)'); glow.addColorStop(1, 'rgba(255,170,60,0)');
+    ctx.fillStyle = glow; ctx.fillRect(pu.x + 4, pu.y + 26, pu.w - 8, pu.h - 48);
+  }
   S.plates.forEach((pl, i) => {
     const pos = plateSlotPos(i);
     ctx.globalAlpha = groupById(pl.groupId) ? 1 : 0.4;
-    ctx.fillStyle = '#fff'; circle(pos.x, pos.y, 18); ctx.fill();
-    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = pl.color; circle(pos.x, pos.y, 10); ctx.fill();
-    ctx.fillStyle = '#D00000'; rr(pos.x + 8, pos.y - 22, 22, 15, 4); ctx.fill();
-    text(String(pl.table), pos.x + 19, pos.y - 14, 10, '#fff');
+    ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(pos.x + 2, pos.y + 5, 19, 9, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 19, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = pl.color; ctx.beginPath(); ctx.ellipse(pos.x, pos.y - 3, 10, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(pos.x - 3, pos.y - 5, 4, 2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#D00000'; rr(pos.x + 8, pos.y - 24, 22, 15, 4); ctx.fill();
+    text(String(pl.table), pos.x + 19, pos.y - 16, 10, '#fff');
     ctx.globalAlpha = 1;
   });
-  // dish return
-  ctx.fillStyle = '#78909C'; rr(d.x, d.y, d.w, d.h, 12); ctx.fill();
-  ctx.fillStyle = '#546E7A'; rr(d.x + 14, d.y + 30, d.w - 28, d.h - 40, 8); ctx.fill();
-  text('DISH RETURN', d.x + d.w / 2, d.y + 15, 12, '#fff', 'center', '900');
+
+  // ---- dish return: counter with a dish rack
+  ctx.fillStyle = 'rgba(0,0,0,.22)'; rr(d.x + 4, d.y + 6, d.w, d.h, 12); ctx.fill();
+  ctx.fillStyle = '#546E7A'; rr(d.x, d.y + 14, d.w, d.h - 14, 12); ctx.fill();
+  ctx.fillStyle = steelGrad(d.x, d.y, d.w, d.h - 20); rr(d.x, d.y, d.w, d.h - 20, 12); ctx.fill();
+  text('DISH RETURN', d.x + d.w / 2, d.y + 14, 12, '#37474F', 'center', '900');
+  ctx.fillStyle = '#90A4AE'; rr(d.x + 16, d.y + 28, d.w - 32, 40, 6); ctx.fill();
+  for (let i = 0; i < 6; i++) { ctx.fillStyle = i % 2 ? '#ECEFF1' : '#fff'; ctx.beginPath(); ctx.ellipse(d.x + 34 + i * 18, d.y + 46, 4, 13, 0, 0, Math.PI * 2); ctx.fill(); }
 }
 
 function drawLibraryStations() {
   for (const sh of LIB_ST.shelves) {
     const hex = shelfHex(sh.id);
+    ctx.fillStyle = 'rgba(0,0,0,.25)'; rr(sh.x + 5, sh.y + 6, sh.w, sh.h, 8); ctx.fill();
+    ctx.fillStyle = '#3E2723'; rr(sh.x + sh.w - 8, sh.y + 4, 12, sh.h, 4); ctx.fill();
     ctx.fillStyle = '#4E342E'; rr(sh.x, sh.y, sh.w, sh.h, 8); ctx.fill();
     for (let row = 0; row < 2; row++) {
       for (let b = 0; b < 11; b++) {
@@ -977,6 +1119,7 @@ function draw() {
   ctx.clearRect(0, 0, W, H);
   if (!S) { ctx.fillStyle = '#F5F1E7'; ctx.fillRect(0, 0, W, H); return; }
   drawFloor();
+  drawLighting();
   if (S.mode === 'dining') drawDiningStations(); else drawLibraryStations();
   // hover outline on clickable things
   if (hover && screen === 'play') {

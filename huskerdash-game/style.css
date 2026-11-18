@@ -229,3 +229,11 @@ footer a { color: #fff; }
 .look-opt:disabled { opacity: .45; cursor: default; }
 .look-opt .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid #0002; }
 @media (max-width: 640px) { .locker { grid-template-columns: 1fr; } }
+
+/* ---------- Restart ---------- */
+.btn.danger { background: #fff; color: #9E0000; border: 2px solid #9E0000; box-shadow: 0 4px 0 #c9bfae; }
+.btn.danger:hover { background: #FDECEC; }
+.end-actions { margin-top: 6px; }
+.end-actions .btn { font-size: 15px; padding: 9px 16px; }
+.lose-list { text-align: left; display: inline-block; margin: 4px 0 10px; line-height: 1.6; }
+.keep { display: block; margin: 6px 0 12px; font-weight: 700; }

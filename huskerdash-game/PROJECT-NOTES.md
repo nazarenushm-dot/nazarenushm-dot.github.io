@@ -30,7 +30,9 @@ Story links and quiz questions are in game.js in the LEVELS list.
 
 ## Features
 - Customer types: Freshman, Athlete, Grad Student, Study Group, Game Day Fans
-- Hearts = patience; happier students tip more
+- Hearts = patience; happier students tip more (patience was slowed down so players have time)
+- Open kitchen with an animated chef (flames, steam, flipping pan, carries plates to the pass);
+  tables, chairs, counters and characters have shading and shadows for a more 3D look
 - Chain bonus for doing the same action back-to-back
 - Shop with 8 upgrades, most with multiple levels: Running Shoes, Free Coffee, Bigger Tray, Tip Jar,
   Express Kitchen, Faster Menus, Welcome Mat, Lucky Lanyard, Extra Table (up to 3 more tables,
