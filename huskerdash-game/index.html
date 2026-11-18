@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Husker Dash: A Semester at UNL</title>
+  <meta name="description" content="A Diner Dash-style game about working student jobs at the University of Nebraska–Lincoln, based on Daily Nebraskan stories.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <div id="hud-level">Husker Dash</div>
+        <div id="hud-place">A Semester at UNL</div>
+      </div>
+      <div class="hud-mid">
+        <div class="money-row"><span id="hud-money">$0</span><span id="hud-goal"></span></div>
+        <div class="bar"><div id="hud-bar"></div><div id="hud-goal-mark" class="mark"></div><div id="hud-expert-mark" class="mark expert"></div></div>
+      </div>
+      <div class="hud-right">
+        <div id="hud-left"></div>
+        <button id="btn-help" title="How to play" aria-label="How to play">?</button>
+        <button id="btn-pause" title="Pause (P)" aria-label="Pause">❚❚</button>
+        <button id="btn-mute" title="Sound on/off (M)" aria-label="Toggle sound">♪</button>
+      </div>
+    </header>
+
+    <div id="ticker" aria-label="Daily Nebraskan headlines">
+      <span class="ticker-label">📰 DAILY NEBRASKAN</span>
+      <div class="ticker-window"><div id="ticker-track"></div></div>
+    </div>
+
+    <div id="stage">
+      <canvas id="game" width="960" height="560"></canvas>
+      <div id="hint"></div>
+      <div id="toast"></div>
+      <div id="flash"></div>
+      <div id="overlay" class="show"></div>
+    </div>
+
+    <footer>A Multimedia Journalism class project featuring stories from <a href="https://www.dailynebraskan.com" target="_blank" rel="noopener">The Daily Nebraskan</a>. Stories belong to their authors. Not affiliated with or endorsed by the University of Nebraska–Lincoln.</footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
